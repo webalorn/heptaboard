@@ -2,6 +2,7 @@
 __test__/
 src/heptaboard
 *.o
+*.a
 *.elf
 *.hex
 *.tmp

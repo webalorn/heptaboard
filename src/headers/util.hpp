@@ -36,6 +36,8 @@ public:
 };
 const EndOfLineObj EOL{};
 
+bool isStringInFile(std::string file, std::string text);
+
 
 /*
 	Exceptions

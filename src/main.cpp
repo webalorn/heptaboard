@@ -24,9 +24,8 @@ int main(int argc, char** argv) {
 			assertCommandExists("avrdude");
 		}
 
-		// TODO : heptagon
-
-		// Compile C code
+		// Compile code
+		compileHeptagon(conf);
 		string hexFile = compileC(conf);
 
 		// Send the code to the board

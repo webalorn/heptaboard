@@ -4,6 +4,7 @@
 #include "config.hpp"
 #include "util.hpp"
 
+void compileHeptagon(CompilerConfig& conf);
 std::string compileC(CompilerConfig& conf);
 void sendProgToBoard(CompilerConfig& conf, std::string hexFile);
 

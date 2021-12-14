@@ -3,6 +3,7 @@
 
 #include "headers/util.hpp"
 #include <cstdlib>
+#include <fstream>
 
 using namespace std;
 
@@ -19,6 +20,17 @@ ostream& operator<<(ostream& os, const vector<IOMod>& modList) {
 		os << mod;
 	}
 	return os;
+}
+
+bool isStringInFile(string file, string text) {
+	ifstream fileStream(file.c_str());
+	string line;
+	while (getline(fileStream, line)) {
+		if (line.find(text, 0) != string::npos) {
+			return true;
+		}
+	}
+	return false;
 }
 
 
@@ -93,7 +105,7 @@ SysCommand::SysCommand(std::string name) {
 	cmd << name;
 }
 int SysCommand::exec() {
-	cout << cmd.str() << endl;
+	cout << cmd.str() << "\n" << endl;
 	int code = system(cmd.str().c_str());
 	cmd.str(cmdName);
 	return code == 0;

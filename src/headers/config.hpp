@@ -5,12 +5,20 @@
 #include <vector>
 #include <tclap/CmdLine.h>
 
+#include "util.hpp"
+
 struct CompilerConfig {
     std::string argsGcc = "";
     std::string argsLink = "";
     std::string argsHeptagon = "";
+    std::string entryPoint;
+    std::string entryFile;
+    std::string entryFileCompiled;
+    bool entryPointHasMem;
+
     std::vector<std::string> cFiles;
     std::vector<std::string> heptFiles;
+    std::vector<std::string> cFromHeptFiles;
     std::string outputFile = "arduino_reactive_program";
     
     bool listBoards = false;
@@ -22,6 +30,9 @@ struct CompilerConfig {
     std::string boardConstructor = "arduino";
 
     void readCmdArgs(int argc, char** argv);
+    void parseEntryPoint(std::string label);
+    void checkEntryPoint();
+    fs::path getHeptTmpDirectory();
 };
 
 #endif // ARGS_HPP
