@@ -4,6 +4,7 @@
 
 #include "headers/config.hpp"
 #include "headers/util.hpp"
+#include "headers/compiler.hpp"
 
 using namespace std;
 
@@ -14,19 +15,24 @@ int main(int argc, char** argv) {
 		assertCommandExists("heptc", "heptagon");
 		assertCommandExists("avr-gcc");
 		assertCommandExists("avr-objcopy");
-		assertCommandExists("avrdude");
 
 		// Read the command line arguments
 		CompilerConfig conf;
 		conf.readCmdArgs(argc, argv);
 
 		if (conf.sendToBoard) {
-			assertCommandExists("arduino-cli");
+			assertCommandExists("avrdude");
 		}
 
-		// TODO : find the files
-		// TODO : compile
-		// TODO : avrdude
+		// TODO : heptagon
+
+		// Compile C code
+		string hexFile = compileC(conf);
+
+		// Send the code to the board
+		if (conf.sendToBoard) {
+			sendProgToBoard(conf, hexFile);
+		}
 
 	} catch (TCLAP::ArgException& e) {
 		cerr << IOMod(FG_RED) << "[ERROR] " << e.error() << " for arg " << e.argId() << EOL;

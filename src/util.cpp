@@ -2,7 +2,7 @@
 // TODO : IO
 
 #include "headers/util.hpp"
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace std;
 
@@ -42,6 +42,9 @@ ostream& operator<<(ostream& os, const HeptException& e) {
 }
 
 CardDeviceError::CardDeviceError(string msg) : HeptException(msg) {}
+CompileError::CompileError(string msg) : HeptException("") {
+	errorMsg = "[COMPILATION ERROR] " + msg;
+}
 
 
 /*
@@ -58,6 +61,20 @@ void assertCommandExists(string cmdName, string requirement) {
 	}
 }
 
+void assertPathExists(const string& path, bool assertFile) {
+	if (!fs::exists(path)) {
+		throw HeptException("The file " + path + " doesn't exists");
+	}
+	if (assertFile && fs::is_directory(path)) {
+		throw HeptException(path + " is a directory, not a file");
+	}
+}
+void assertPathExists(const vector<string>& paths, bool assertFile) {
+	for (const string& path : paths) {
+		assertPathExists(path, assertFile);
+	}
+}
+
 std::vector<fs::path> listPossibleBoards() {
 	std::vector<fs::path> bordPaths;
 	std::string devicesPath = "/dev";
@@ -70,4 +87,14 @@ std::vector<fs::path> listPossibleBoards() {
 		}
 	}
 	return bordPaths;
+}
+
+SysCommand::SysCommand(std::string name) {
+	cmd << name;
+}
+int SysCommand::exec() {
+	cout << cmd.str() << endl;
+	int code = system(cmd.str().c_str());
+	cmd.str(cmdName);
+	return code == 0;
 }
