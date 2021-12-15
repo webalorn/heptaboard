@@ -1,0 +1,26 @@
+open Harduino
+
+const led1 : int = 2
+const led2 : int = 3
+
+node everyn(n : int) returns (v : bool);
+var x, px : int;
+let
+	px = 0 fby (x % n);
+	x = px + 1;
+	v = (x = n);
+tel;
+
+node blink(initial : bool; delay : int) returns (y_level : int);
+var py, y : bool;
+let
+	py = initial fby y;
+	y = if everyn(delay) then (not py) else py;
+	y_level = if y then c_HIGH else c_LOW;
+tel;
+
+node main() returns (out_t:int);
+let
+	out_t = digitalWrite(led1, blink(false, 6))
+		+ digitalWrite(led2, blink(true, 3));
+tel;

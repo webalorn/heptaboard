@@ -10,6 +10,13 @@
 	\
 	void Harduino__ ## FNAME ## _step(__VA_ARGS__, Harduino__ ## FNAME ## _out *);
 
+#define DECL_FUN_NOARGS(TY_OUT, FNAME) \
+	typedef struct { \
+		TY_OUT o; \
+	} Harduino__ ## FNAME ## _out; \
+	\
+	void Harduino__ ## FNAME ## _step(Harduino__ ## FNAME ## _out *);
+
 #define DECL_FUN_VOID(FNAME, ...) DECL_FUN(int, FNAME, __VA_ARGS__)
 
 /* Arduino library */
@@ -17,13 +24,20 @@
 DECL_FUN_VOID(digitalWrite, int, int)
 DECL_FUN(int, digitalRead, int)
 
+DECL_FUN_VOID(randomSeed, int)
+DECL_FUN(int, random, int)
+DECL_FUN_NOARGS(float, random_f)
+
+DECL_FUN_NOARGS(int, millis)
+DECL_FUN_NOARGS(int, micros)
+
 /* Math library */
 
 DECL_FUN(int, abs, int)
 DECL_FUN(float, abs_f, float)
 DECL_FUN(int, constrain, int, int, int)
 DECL_FUN(float, constrain_f, float, float, float)
-DECL_FUN(int, map_interval, int, int, int, int, int)
+DECL_FUN(int, map_interval, long, long, long, long, long)
 DECL_FUN(int, max, int, int)
 DECL_FUN(float, max_f, float, float)
 DECL_FUN(int, min, int, int)

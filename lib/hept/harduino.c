@@ -1,17 +1,39 @@
 #include <math.h>
+#include "stdlib.h"
 #include "harduino.h"
 
 #define DEF_FUN(FNAME, ...) \
 	void Harduino__ ## FNAME ## _step(__VA_ARGS__, Harduino__ ## FNAME ## _out *out)
+
+#define DEF_FUN_NOARGS(FNAME) \
+	void Harduino__ ## FNAME ## _step(Harduino__ ## FNAME ## _out *out)
 
 /* Arduino library */
 
 DEF_FUN(digitalWrite, int pin, int pinval) {
 	digitalWrite(pin, pinval);
 }
-
 DEF_FUN(digitalRead, int pin) {
 	out->o = digitalRead(pin);
+}
+
+DEF_FUN(randomSeed, int seed) {
+	if (seed != 0) {
+		srandom(seed);
+	}
+}
+DEF_FUN(random, int howbig)  {
+	out->o = howbig == 0 ? 0 : random() % howbig;
+}
+DEF_FUN_NOARGS(random_f)  {
+	out->o = (float)random() / (float)RAND_MAX;
+}
+
+DEF_FUN_NOARGS(millis) {
+	out->o = millis();
+}
+DEF_FUN_NOARGS(micros) {
+	out->o = micros();
 }
 
 /* Math library */
@@ -28,8 +50,8 @@ DEF_FUN(constrain, int x, int y, int z) {
 DEF_FUN(constrain_f, float x, float y, float z) {
 	out->o = constrain(x, y, z);
 }
-DEF_FUN(map_interval, int a, int b, int c, int d, int e) {
-	out->o = map_interval(a, b, c, d, e);
+DEF_FUN(map_interval, long x, long in_min, long in_max, long out_min, long out_max) {
+	out->o = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 DEF_FUN(max, int x, int y) {
 	out->o = max(x, y);

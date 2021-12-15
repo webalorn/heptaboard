@@ -1,0 +1,9 @@
+open Harduino
+
+const ledBleuePin : int = 2
+
+node main()
+returns (out_t: int)
+let
+    out_t = digitalWrite(ledBleuePin, random(2));
+tel

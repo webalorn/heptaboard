@@ -28,6 +28,15 @@ const c_RISING : int = 3
 val fun digitalWrite(pin:int; pinval:int) returns (o:int)
 val fun digitalRead(pint:int) returns (o:int)
 
+val fun randomSeed(seed:int) returns (o:int)
+val fun random(howbig:int) returns (o:int)
+val fun random_f() returns (o:float)
+
+val fun millis() returns (o:int)
+val fun micros() returns (o:int)
+
+(* Math library *)
+
 val fun abs(x:int) returns (o:int)
 val fun abs_f(x:float) returns (o:float)
 val fun constrain(x:int; y:int; z:int) returns (o:int)
