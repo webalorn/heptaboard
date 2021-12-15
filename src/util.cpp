@@ -102,11 +102,13 @@ std::vector<fs::path> listPossibleBoards() {
 }
 
 SysCommand::SysCommand(std::string name) {
-	cmd << name;
+	cmdName = name;
+	cmd << cmdName;
 }
 int SysCommand::exec() {
 	cout << cmd.str() << "\n" << endl;
 	int code = system(cmd.str().c_str());
-	cmd.str(cmdName);
+	cmd.str("");
+	cmd << cmdName;
 	return code == 0;
 }

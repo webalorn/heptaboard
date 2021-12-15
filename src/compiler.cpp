@@ -22,7 +22,7 @@ void compileHeptagon(CompilerConfig& conf) {
     std::filesystem::current_path(prevWorkingPath / tmpDirectory);
 
     SysCommand heptcCmd("heptc");
-    heptcCmd << "-target" << "c";
+    heptcCmd << "-target" << "c" << "-I" << "/usr/local/include/heptaboard";
     for (const auto& filePath : heptFiles) {
         heptcCmd << filePath;
     }
@@ -35,11 +35,18 @@ void compileHeptagon(CompilerConfig& conf) {
     for(auto& p: fs::recursive_directory_iterator(tmpDirectory)) {
         auto fPath = p.path();
         if (fs::is_regular_file(fPath) && fPath.extension().string() == ".c") {
-            conf.cFromHeptFiles.push_back(fPath.string());
+            conf.cFromHeptFiles.push_back(fs::relative(fPath).string());
         }
     }
 
     conf.checkEntryPoint();
+}
+
+void setGccFlags(CompilerConfig& conf, SysCommand& cmd) {
+    cmd << "-Os" << ("-DF_CPU=" + conf.clockSpeed + "UL")
+            << ("-mmcu=" + conf.mmcu) << "-ffunction-sections" << "-fdata-sections"
+            << "-I/usr/local/include/heptaboard/arduino" << "-I/usr/local/include/heptaboard/hept"
+            << conf.argsGcc;
 }
 
 string compileC(CompilerConfig& conf) {
@@ -49,26 +56,38 @@ string compileC(CompilerConfig& conf) {
     string elfFile = conf.outputFile + ".elf";
 
     // Compile individual C files to obj files
+    SysCommand gccCmd("avr-gcc");
     vector<fs::path> compiledObjFiles;
     for (const string& filePathStr : cFiles) {
         fs::path filePath(filePathStr);
         fs::path objPath = filePath;
         objPath.replace_extension("o");
         
-        SysCommand gccCmd("avr-gcc");
-        gccCmd << "-c" << "-std=gnu99" << "-Os" << ("-DF_CPU=" + conf.clockSpeed + "UL")
-            << ("-mmcu=" + conf.mmcu) << "-ffunction-sections" << "-fdata-sections"
-            << "-I/usr/local/include/heptaboard" << conf.argsGcc
-            << "-o" << objPath << filePath;
+        setGccFlags(conf, gccCmd);
+        gccCmd << "-c" << "-std=gnu99"<< "-o" << objPath << filePath;
         
         if (!gccCmd.exec()) {
             throw CompileError("Can't compile file " + filePathStr);
         }
         compiledObjFiles.push_back(objPath);
     }
+
+    // Compile main file
+    setGccFlags(conf, gccCmd);
+    auto mainObj = conf.getHeptTmpDirectory() / "main.o";
+    fs::path entryHeader = fs::path(conf.entryFileCompiled).replace_extension(".h");
+    gccCmd << "-c" << "-std=c++17"<< "-o" << mainObj << "/usr/local/include/heptaboard/main.cpp"
+        << ("-DENTRY_HEADER=\"\\\"" + absolute(entryHeader).string() + "\\\"\"")
+        << ("-DENTRY=" + conf.entryPoint) << ("-DLOOP_DELAY=" + to_string(conf.loopDelay));
+    if (conf.entryPointHasMem) {
+        gccCmd << ("-DENTRY_MEM");
+    }
+    if (!gccCmd.exec()) {
+        throw CompileError("Can't compile the main.cpp file");
+    }
+    compiledObjFiles.push_back(mainObj);
     
     // Link files together
-    SysCommand gccCmd("avr-gcc");
     gccCmd << "-Os" <<  "-ffunction-sections" << "-fdata-sections" << "-Wl,--gc-sections"
         << ("-mmcu=" + conf.mmcu) << conf.argsLink
         << "-o" << elfFile;

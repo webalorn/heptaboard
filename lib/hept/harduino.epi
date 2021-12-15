@@ -1,0 +1,49 @@
+(* Constants *)
+const c_HIGH : int = 1
+const c_LOW : int =  0
+
+const c_INPUT : int = 0
+const c_OUTPUT : int = 1
+const c_INPUT_PULLUP : int = 2
+
+const c_PI : float = 3.1415926535897932384626433832795
+const c_HALF_PI : float = 1.5707963267948966192313216916398
+const c_TWO_PI : float = 6.283185307179586476925286766559
+const c_DEG_TO_RAD : float = 0.017453292519943295769236907684886
+const c_RAD_TO_DEG : float = 57.295779513082320876798154814105
+const c_EULER : float = 2.718281828459045235360287471352
+
+const c_SERIAL : int =  0
+const c_DISPLAY : int = 1
+
+const c_LSBFIRST : int = 0
+const c_MSBFIRST : int = 1
+
+const c_CHANGE : int = 1
+const c_FALLING : int = 2
+const c_RISING : int = 3
+
+(* Arduino library *)
+
+val fun digitalWrite(pin:int; pinval:int) returns (o:int)
+val fun digitalRead(pint:int) returns (o:int)
+
+val fun abs(x:int) returns (o:int)
+val fun abs_f(x:float) returns (o:float)
+val fun constrain(x:int; y:int; z:int) returns (o:int)
+val fun constrain_f(x:float; y:float; z:float) returns (o:float)
+val fun map_interval(a:int; b:int; c:int; d:int; e:int) returns (o:int)
+val fun max(x:int; y:int) returns (o:int)
+val fun max_f(x:float; y:float) returns (o:float)
+val fun min(x:int; y:int) returns (o:int)
+val fun min_f(x:float; y:float) returns (o:float)
+val fun pow(x:float; y:float) returns (o:float)
+val fun sqrt(x:float) returns (o:float)
+val fun cos(x:float) returns (o:float)
+val fun sin(x:float) returns (o:float)
+val fun tan(x:float) returns (o:float)
+
+val fun floor(x:float) returns (o:float)
+val fun ceil(x:float) returns (o:float)
+val fun cast_float(x:int) returns (o:float)
+val fun cast_int(x:float) returns (o:int)

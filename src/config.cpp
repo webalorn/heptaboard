@@ -54,17 +54,20 @@ void CompilerConfig::readCmdArgs(int argc, char** argv) {
 	ValueArg<string> argsLinkTArg("", "args-link", "Arguments passed to avr-gcc when used as a linker", false, this->argsLink, "linker args", cmd);
 	ValueArg<string> argsHeptagonTArg("", "args-hpt", "Arguments passed to heptagon", false, this->argsHeptagon, "heptagon args", cmd);
 	ValueArg<string> outputFileTArg("o", "output", "Name used by the output files", false, this->outputFile, "output-name", cmd);
-	ValueArg<string> entryPointTArg("e", "entry", "Entry point of the heptagon program, in the form filename::function (h1::main for the main function in h1.ept). If the file is not given, the first heptagon file is used", true, this->outputFile, "filename::function", cmd);
+	ValueArg<string> entryPointTArg("e", "entry", "Entry point of the heptagon program, in the form filename::function (h1::main for the main function in h1.ept). If the file is not given, the first heptagon file is used. If not given at all, the function 'main' is used.", false, "main", "filename::function", cmd);
 
 	SwitchArg sendToBoardTArg("s", "send", "Send the compiled program to the arduino board", cmd, this->sendToBoard);
 	// SwitchArg listBoardsTArg("l", "list", "List all connected arduino boards", cmd, this->listBoards);
 
 	ValueArg<string> mmcuTArg("m", "mmcu", "mmcu (board type, defaults to " + this->mmcu + ")", false, this->mmcu, "board-mmcu", cmd);
 	ValueArg<string> boardDeviceTArg("b", "board", "board device (file descriptor path ; required if '--send' is set)", false, this->boardDevice, "device path", cmd);
-	ValueArg<string> boardConstructorTArg("c", "constructor", "board constructor (board type, defaults to " + this->boardConstructor + ")", false, this->boardConstructor, "arduino/...", cmd);
-	ValueArg<long long> clockSpeedTArg("", "cpu-clock", "Speed of the clock of the board", false, 16000000UL, "clock speed", cmd);
+	ValueArg<string> boardConstructorTArg("", "constructor", "board constructor (board type, defaults to " + this->boardConstructor + ")", false, this->boardConstructor, "arduino/...", cmd);
 
-	MultiArg<string> cFilesTArg("f", "c-file", "C file compiled with the program", true, "C file", cmd);
+	ValueArg<ull> clockSpeedTArg("", "cpu-clock", "Speed of the clock of the board", false, 16000000UL, "clock speed", cmd);
+	ValueArg<uint> freqTArg("f", "freq", "Number of iterations of the main loop each second", false, 0, "frequency", cmd);
+	ValueArg<uint> loopDelayTArg("d", "delay", "Time between two iteration of the main loop (in milliseconds)", false, 0, "time interval", cmd);
+
+	MultiArg<string> cFilesTArg("c", "c-file", "C file compiled with the program", false, "C file", cmd);
 	UnlabeledMultiArg<string> heptFilesTArg("heptagon-files", "heptagon file names", true, "List of paths", false);
 	
 	// Parse the argv array.
@@ -87,6 +90,16 @@ void CompilerConfig::readCmdArgs(int argc, char** argv) {
 	this->boardDevice = boardDeviceTArg.getValue();
 	this->boardConstructor = boardConstructorTArg.getValue();
 	this->clockSpeed = to_string(clockSpeedTArg.getValue());
+
+	this->loopDelay = loopDelayTArg.getValue();
+	if (freqTArg.isSet() && loopDelayTArg.isSet()) {
+		throw CardDeviceError("Can't set the --delay option and the --freq option together");
+	} else if (freqTArg.isSet()) {
+		if (freqTArg.getValue() < 1) {
+			throw CardDeviceError("Can't set a frequency lower than 1");
+		}
+		this->loopDelay = 1000 / freqTArg.getValue();
+	}
 
 	/* Do some checks */
 	if (this->sendToBoard) {

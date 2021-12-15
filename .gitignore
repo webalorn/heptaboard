@@ -6,4 +6,5 @@ src/heptaboard
 *.elf
 *.hex
 *.tmp
+*.epci
 heptaboard

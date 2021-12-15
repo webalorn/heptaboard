@@ -7,6 +7,8 @@
 
 #include "util.hpp"
 
+using ull = unsigned long long;
+
 struct CompilerConfig {
     std::string argsGcc = "";
     std::string argsLink = "";
@@ -28,6 +30,8 @@ struct CompilerConfig {
     std::string mmcu = "atmega328p";
     std::string clockSpeed;
     std::string boardConstructor = "arduino";
+
+    uint loopDelay = 0;
 
     void readCmdArgs(int argc, char** argv);
     void parseEntryPoint(std::string label);
