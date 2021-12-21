@@ -44,9 +44,14 @@ DECL_FUN(int, min, int, int)
 DECL_FUN(float, min_f, float, float)
 DECL_FUN(float, pow, float, float)
 DECL_FUN(float, sqrt, float)
+
 DECL_FUN(float, cos, float)
 DECL_FUN(float, sin, float)
 DECL_FUN(float, tan, float)
+
+DECL_FUN(float, acos, float)
+DECL_FUN(float, asin, float)
+DECL_FUN(float, atan, float)
 
 DECL_FUN(float, floor, float)
 DECL_FUN(float, ceil, float)

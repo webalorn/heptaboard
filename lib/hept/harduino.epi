@@ -48,9 +48,13 @@ val fun min(x:int; y:int) returns (o:int)
 val fun min_f(x:float; y:float) returns (o:float)
 val fun pow(x:float; y:float) returns (o:float)
 val fun sqrt(x:float) returns (o:float)
+
 val fun cos(x:float) returns (o:float)
 val fun sin(x:float) returns (o:float)
 val fun tan(x:float) returns (o:float)
+val fun asin(x:float) returns (y:float)
+val fun acos(x:float) returns (y:float)
+val fun atan(x:float) returns (y:float)
 
 val fun floor(x:float) returns (o:float)
 val fun ceil(x:float) returns (o:float)

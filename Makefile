@@ -11,11 +11,11 @@ H_PATH = /usr/local/include/heptaboard
 BIN_PATH = /usr/local/bin
 
 CXX = clang++
-CXX-G-FLAGS = -g -fsanitize=address -ggdb3
-CXX-FLAGS = -std=c++20 -O2 -Wall -Wextra -Wno-sign-compare -Wshadow $(CXX-G-FLAGS)
+CXX-FLAGS = -std=c++20 -O2 -Wall -Wextra -Wno-sign-compare -Wshadow -Wpedantic
 INCLUDES = -Isrc/headers
 HB-SRC = $(wildcard src/*.c) $(wildcard src/*.cpp)
 OBJ-FILES = $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(HB-SRC)))
+DEP = $(OBJ-FILES:%.o=%.d)
 
 # This is a minimal set of ANSI/VT100 color codes
 _END=\x1b[0m
@@ -59,13 +59,10 @@ lib/%.o: lib/%.c
 heptaboard: $(OBJ-FILES)
 	$(CXX) $(CXX-FLAGS) -o heptaboard $(OBJ-FILES)
 
+-include $(DEP)
+
 src/%.o: src/%.cpp
-	$(CXX) $(CXX-FLAGS) $(INCLUDES) -o $@ -c $<
+	$(CXX) $(CXX-FLAGS) $(INCLUDES) -MMD -o $@ -c $<
 
-clean: cleanLib cleanSrc
-
-cleanLib:
-	rm $(LIB-OBJ-FILES) $(LIB_FILE) $(LIB_LOCALPATH)/harduino.epci
-
-cleanSrc:
-	rm $(OBJ-FILES) heptaboard
+clean:
+	$(LIB-OBJ-FILES) $(LIB_FILE) $(LIB_LOCALPATH)/harduino.epci $(OBJ-FILES) $(DEP) heptaboard

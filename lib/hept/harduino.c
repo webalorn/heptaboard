@@ -71,14 +71,24 @@ DEF_FUN(pow, float x, float y) {
 DEF_FUN(sqrt, float x) {
 	out->o = sqrt(x);
 }
+
 DEF_FUN(cos, float x) {
-	out->o = cos(x);
+	out->o = cosf(x);
 }
 DEF_FUN(sin, float x) {
-	out->o = sin(x);
+	out->o = sinf(x);
 }
 DEF_FUN(tan, float x) {
-	out->o = tan(x);
+	out->o = tanf(x);
+}
+DEF_FUN(acos, float x) {
+	out->o = acosf(x);
+}
+DEF_FUN(asin, float x) {
+	out->o = asinf(x);
+}
+DEF_FUN(atan, float x) {
+	out->o = atanf(x);
 }
 
 DEF_FUN(floor, float x) {
