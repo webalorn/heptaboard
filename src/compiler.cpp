@@ -46,7 +46,7 @@ void setGccFlags(CompilerConfig& conf, SysCommand& cmd) {
     cmd << "-Os" << ("-DF_CPU=" + conf.clockSpeed + "UL")
             << ("-mmcu=" + conf.mmcu) << "-ffunction-sections" << "-fdata-sections"
             << "-I/usr/local/include/heptaboard/arduino" << "-I/usr/local/include/heptaboard/hept"
-            << conf.argsGcc;
+            << conf.argsGcc << "-std=gnu99";
 }
 
 string compileC(CompilerConfig& conf) {
@@ -64,7 +64,7 @@ string compileC(CompilerConfig& conf) {
         objPath.replace_extension("o");
         
         setGccFlags(conf, gccCmd);
-        gccCmd << "-c" << "-std=gnu99"<< "-o" << objPath << filePath;
+        gccCmd << "-c" << "-o" << objPath << filePath;
         
         if (!gccCmd.exec()) {
             throw CompileError("Can't compile file " + filePathStr);
@@ -76,14 +76,14 @@ string compileC(CompilerConfig& conf) {
     setGccFlags(conf, gccCmd);
     auto mainObj = conf.getHeptTmpDirectory() / "main.o";
     fs::path entryHeader = fs::path(conf.entryFileCompiled).replace_extension(".h");
-    gccCmd << "-c" << "-std=c++17"<< "-o" << mainObj << "/usr/local/include/heptaboard/main.cpp"
+    gccCmd << "-c" << "-o" << mainObj << "/usr/local/include/heptaboard/main.c"
         << ("-DENTRY_HEADER=\"\\\"" + absolute(entryHeader).string() + "\\\"\"")
         << ("-DENTRY=" + conf.entryPoint) << ("-DLOOP_DELAY=" + to_string(conf.loopDelay));
     if (conf.entryPointHasMem) {
         gccCmd << ("-DENTRY_MEM");
     }
     if (!gccCmd.exec()) {
-        throw CompileError("Can't compile the main.cpp file");
+        throw CompileError("Can't compile the main.c file");
     }
     compiledObjFiles.push_back(mainObj);
     

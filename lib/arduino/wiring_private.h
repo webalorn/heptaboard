@@ -30,10 +30,6 @@
 
 #include "Arduino.h"
 
-#ifdef __cplusplus
-extern "C"{
-#endif
-
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
@@ -64,9 +60,5 @@ uint32_t countPulseASM(volatile uint8_t *port, uint8_t bit, uint8_t stateMask, u
 #endif
 
 typedef void (*voidFuncPtr)(void);
-
-#ifdef __cplusplus
-} // extern "C"
-#endif
 
 #endif

@@ -31,10 +31,6 @@
 
 #include "binary.h"
 
-#ifdef __cplusplus
-extern "C"{
-#endif
-
 void yield(void);
 
 #define HIGH 0x1
@@ -222,38 +218,6 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define TIMER5A 16
 #define TIMER5B 17
 #define TIMER5C 18
-
-#ifdef __cplusplus
-} // extern "C"
-#endif
-
-#ifdef __cplusplus
-#include "WCharacter.h"
-#include "WString.h"
-#include "HardwareSerial.h"
-#include "USBAPI.h"
-#if defined(HAVE_HWSERIAL0) && defined(HAVE_CDCSERIAL)
-#error "Targets with both UART0 and CDC serial not supported"
-#endif
-
-uint16_t makeWord(uint16_t w);
-uint16_t makeWord(byte h, byte l);
-
-#define word(...) makeWord(__VA_ARGS__)
-
-unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
-unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
-
-void tone(uint8_t _pin, unsigned int frequency, unsigned long duration = 0);
-void noTone(uint8_t _pin);
-
-// WMath prototypes
-long random(long);
-long random(long, long);
-void randomSeed(unsigned long);
-long map(long, long, long, long, long);
-
-#endif
 
 #include "pins_arduino.h"
 
