@@ -1,9 +1,9 @@
 open Harduino
 
-const ledBleuePin : int = 2
+const ledGreenPin : int = 11
 
 node main()
 returns (out_t: int)
 let
-    out_t = digitalWrite(ledBleuePin, random(2));
+    out_t = digitalWrite(ledGreenPin, random(2));
 tel

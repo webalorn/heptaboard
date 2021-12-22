@@ -23,10 +23,35 @@ const c_CHANGE : int = 1
 const c_FALLING : int = 2
 const c_RISING : int = 3
 
+(* Pins constants *)
+
+const c_SS : int = 10
+const c_MOSI : int = 11
+const c_MISO : int = 12
+const c_SCK : int  = 13
+
+const c_SDA : int = 18
+const c_SCL : int = 19
+
+const c_A0 : int = 14
+const c_A1 : int = 15
+const c_A2 : int = 16
+const c_A3 : int = 17
+const c_A4 : int = 18
+const c_A5 : int = 19
+const c_A6 : int = 20
+const c_A7 : int = 21
+
 (* Arduino library *)
 
 val fun digitalWrite(pin:int; pinval:int) returns (o:int)
-val fun digitalRead(pint:int) returns (o:int)
+val fun digitalRead(pin:int) returns (o:int)
+
+val fun analogRead(pin:int) returns (o:int)
+val fun analogWrite(pin:int; pinval:int) returns (o:int)
+
+(* val fun tone(pin:int; freq:int; duration:int) returns (o:int)
+val fun noTone(pin:int) returns (o:int) *)
 
 val fun randomSeed(seed:int) returns (o:int)
 val fun random(howbig:int) returns (o:int)
@@ -58,5 +83,7 @@ val fun atan(x:float) returns (y:float)
 
 val fun floor(x:float) returns (o:float)
 val fun ceil(x:float) returns (o:float)
-val fun cast_float(x:int) returns (o:float)
-val fun cast_int(x:float) returns (o:int)
+val fun int2float(x:int) returns (o:float)
+val fun float2int(x:float) returns (o:int)
+val fun bool2int(x:bool) returns (o:int)
+val fun int2bool(x:int) returns (o:bool)

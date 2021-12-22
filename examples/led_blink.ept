@@ -1,11 +1,11 @@
 open Harduino
 
-const ledBleuePin : int = 2
+const ledGreenPin : int = 11
 
 node main()
 returns (out_t: int)
 var a:int;
 let
-    a = c_HIGH -> 1 - pre a;
-    out_t = digitalWrite(ledBleuePin, a);
+    a = c_HIGH -> if c_HIGH = pre a then c_LOW else c_HIGH;
+    out_t = digitalWrite(ledGreenPin, a);
 tel

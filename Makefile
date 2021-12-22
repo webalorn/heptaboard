@@ -65,4 +65,4 @@ src/%.o: src/%.cpp
 	$(CXX) $(CXX-FLAGS) $(INCLUDES) -MMD -o $@ -c $<
 
 clean:
-	$(LIB-OBJ-FILES) $(LIB_FILE) $(LIB_LOCALPATH)/harduino.epci $(OBJ-FILES) $(DEP) heptaboard
+	rm $(LIB-OBJ-FILES) $(LIB_FILE) $(LIB_LOCALPATH)/harduino.epci $(OBJ-FILES) $(DEP) heptaboard

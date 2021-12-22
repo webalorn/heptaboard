@@ -2,6 +2,7 @@
 #define HARDUINO_H
 
 #include "../arduino/Arduino.h"
+#include "harduino_types.h"
 
 #define DECL_FUN(TY_OUT, FNAME, ...) \
 	typedef struct { \
@@ -23,6 +24,12 @@
 
 DECL_FUN_VOID(digitalWrite, int, int)
 DECL_FUN(int, digitalRead, int)
+
+DECL_FUN(int, analogRead, int)
+DECL_FUN_VOID(analogWrite, int, int)
+
+// DECL_FUN_VOID(tone, int, int, int)
+// DECL_FUN_VOID(noTone, int)
 
 DECL_FUN_VOID(randomSeed, int)
 DECL_FUN(int, random, int)
@@ -55,9 +62,10 @@ DECL_FUN(float, atan, float)
 
 DECL_FUN(float, floor, float)
 DECL_FUN(float, ceil, float)
-DECL_FUN(float, cast_float, int)
-DECL_FUN(int, cast_int, float)
-
+DECL_FUN(float, int2float, int)
+DECL_FUN(int, float2int, float)
+DECL_FUN(int, bool2int, bool)
+DECL_FUN(bool, int2bool, int)
 
 #endif // HARDUINO_H
 

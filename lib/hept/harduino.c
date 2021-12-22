@@ -17,6 +17,20 @@ DEF_FUN(digitalRead, int pin) {
 	out->o = digitalRead(pin);
 }
 
+DEF_FUN(analogRead, int pin) {
+	out->o = analogRead(pin);
+}
+DEF_FUN(analogWrite, int pin, int pinval) {
+	digitalWrite(pin, pinval);
+}
+
+// DEF_FUN(tone, int pin, int freq, int duration) {
+// 	tone(pin, max(0, freq), duration);
+// }
+// DEF_FUN(noTone, int pin) {
+// 	noTone(pin);
+// }
+
 DEF_FUN(randomSeed, int seed) {
 	if (seed != 0) {
 		srandom(seed);
@@ -97,9 +111,15 @@ DEF_FUN(floor, float x) {
 DEF_FUN(ceil, float x) {
 	out->o = ceil(x);
 }
-DEF_FUN(cast_float, int x) {
+DEF_FUN(int2float, int x) {
 	out->o = (float)x;
 }
-DEF_FUN(cast_int, float x) {
+DEF_FUN(float2int, float x) {
 	out->o = (int)x;
+}
+DEF_FUN(bool2int, bool x) {
+	out->o = (int)x;
+}
+DEF_FUN(int2bool, int x) {
+	out->o = x ? 1 : 0;
 }
