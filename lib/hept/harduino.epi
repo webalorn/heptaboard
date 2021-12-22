@@ -58,7 +58,6 @@ val fun random(howbig:int) returns (o:int)
 val fun random_f() returns (o:float)
 
 val fun millis() returns (o:int)
-val fun micros() returns (o:int)
 
 (* Math library *)
 

@@ -1,5 +1,4 @@
 AVR-CC = avr-gcc -std=gnu99
-AVR-CXX = avr-gcc -std=c++17
 AVR-CCFLAGS = -Os -DF_CPU=16000000UL -mmcu=atmega328p -ffunction-sections -fdata-sections
 LIB-SRC = $(wildcard lib/arduino/*.c) $(wildcard lib/arduino/*.cpp) $(wildcard lib/hept/*.c)
 LIB-OBJ-FILES = $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(LIB-SRC)))
@@ -49,9 +48,6 @@ $(LIB_FILE): $(LIB-OBJ-FILES)
 $(LIB_LOCALPATH)/harduino.epci: $(LIB_LOCALPATH)/hept/harduino.epi
 	heptc $(LIB_LOCALPATH)/hept/harduino.epi
 	mv harduino.epci $(LIB_LOCALPATH)
-
-lib/%.o: lib/%.cpp
-	$(AVR-CXX) $(AVR-CCFLAGS) -o $@ -c $<
 
 lib/%.o: lib/%.c
 	$(AVR-CC) $(AVR-CCFLAGS) -o $@ -c $<

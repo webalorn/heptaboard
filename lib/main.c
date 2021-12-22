@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include <avr/interrupt.h>
 
 #include ENTRY_HEADER
 
@@ -22,9 +23,36 @@ void initVariant() { }
 void setupUSB() __attribute__((weak));
 void setupUSB() { }
 
-int main(void)
-{
-	init();
+volatile bool runLoop;
+unsigned long elapsed_millis = 0;
+ISR(TIMER1_COMPA_vect){
+	runLoop = true;
+#if TIMER_FREQ != 0
+	elapsed_millis += 1000 / TIMER_FREQ;
+#endif
+}
+
+int main() {
+
+#if TIMER_FREQ != 0
+	long freq = TIMER_FREQ; // max 62500
+
+	TCCR1A = 0;
+	TCCR1B = 0;
+	TCNT1  = 0;
+	OCR1A = (16000000UL / (256 * freq))-1;
+	TCCR1B |= (1 << WGM12);
+	TCCR1B |= (1 << CS12); // 256 prescaler
+	TIMSK1 |= (1 << OCIE1A);
+	sei();
+#endif
+	
+#if defined(UCSRB)
+	UCSRB = 0;
+#elif defined(UCSR0B)
+	UCSR0B = 0;
+#endif
+
 	initVariant();
 	
 	setup();
@@ -35,29 +63,28 @@ int main(void)
 	ENTRY_RESET(&memory);
 #endif
 	
-	unsigned long loopTime = millis();
-	unsigned long curTime;
+	runLoop = false;
 	while (true) {
+#if TIMER_FREQ != 0
+		while (!runLoop) {}
+		runLoop = false;
+#endif
+
 		// Main loop
 		#if defined(ENTRY_MEM)
 			ENTRY_STEP(&output, &memory);
 		#else
 			ENTRY_STEP(&output);
 		#endif
-
-		curTime = millis();
-		if (curTime < loopTime) {
-			// In case of overflow of the time counter
-			loopTime = loopTime;
-		} else {
-			loopTime += LOOP_DELAY;
-			while (curTime < loopTime) {
-				delayMicroseconds(DELAY_MICRO);
-				curTime = millis();
-			}
-		}
 	}
 				
 	return 0;
 }
 
+/*
+	Redefined functions
+*/
+
+int millis() {
+	return elapsed_millis % (long)__INT_MAX__;
+}

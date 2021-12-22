@@ -46,9 +46,6 @@ DEF_FUN_NOARGS(random_f)  {
 DEF_FUN_NOARGS(millis) {
 	out->o = millis();
 }
-DEF_FUN_NOARGS(micros) {
-	out->o = micros();
-}
 
 /* Math library */
 

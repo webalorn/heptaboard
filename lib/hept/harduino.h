@@ -36,7 +36,6 @@ DECL_FUN(int, random, int)
 DECL_FUN_NOARGS(float, random_f)
 
 DECL_FUN_NOARGS(int, millis)
-DECL_FUN_NOARGS(int, micros)
 
 /* Math library */
 

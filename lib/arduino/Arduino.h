@@ -26,8 +26,6 @@
 #include <math.h>
 
 #include <avr/pgmspace.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
 
 #include "binary.h"
 
@@ -94,9 +92,6 @@ void yield(void);
 #define degrees(rad) ((rad)*RAD_TO_DEG)
 #define sq(x) ((x)*(x))
 
-#define interrupts() sei()
-#define noInterrupts() cli()
-
 #define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
 #define clockCyclesToMicroseconds(a) ( (a) / clockCyclesPerMicrosecond() )
 #define microsecondsToClockCycles(a) ( (a) * clockCyclesPerMicrosecond() )
@@ -122,7 +117,6 @@ typedef unsigned int word;
 typedef bool boolean;
 typedef uint8_t byte;
 
-void init(void);
 void initVariant(void);
 
 int atexit(void (*func)()) __attribute__((weak));
@@ -134,18 +128,10 @@ int analogRead(uint8_t pin);
 void analogReference(uint8_t mode);
 void analogWrite(uint8_t pin, int val);
 
-unsigned long millis(void);
-unsigned long micros(void);
-void delay(unsigned long ms);
-void delayMicroseconds(unsigned int us);
-unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);
-unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout);
+int millis(void);
 
 void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val);
 uint8_t shiftIn(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder);
-
-void attachInterrupt(uint8_t interruptNum, void (*userFunc)(void), int mode);
-void detachInterrupt(uint8_t interruptNum);
 
 void setup(void);
 void loop(void);

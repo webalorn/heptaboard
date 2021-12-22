@@ -4,6 +4,7 @@ using namespace std;
 using namespace TCLAP;
 
 const char* VERSION = "0.0";
+const uint MAX_TIMER_FREQ = 62500;
 
 fs::path CompilerConfig::getHeptTmpDirectory() {
 	return outputFile + ".hptc.tmp";
@@ -91,14 +92,18 @@ void CompilerConfig::readCmdArgs(int argc, char** argv) {
 	this->boardConstructor = boardConstructorTArg.getValue();
 	this->clockSpeed = to_string(clockSpeedTArg.getValue());
 
-	this->loopDelay = loopDelayTArg.getValue();
+	this->timerFreq = freqTArg.getValue();
+
 	if (freqTArg.isSet() && loopDelayTArg.isSet()) {
 		throw CardDeviceError("Can't set the --delay option and the --freq option together");
-	} else if (freqTArg.isSet()) {
-		if (freqTArg.getValue() < 1) {
-			throw CardDeviceError("Can't set a frequency lower than 1");
+	} else if (loopDelayTArg.isSet()) {
+		if (loopDelayTArg.getValue() < 1) {
+			throw CardDeviceError("Can't set a loop delay lower than 1ms");
 		}
-		this->loopDelay = 1000 / freqTArg.getValue();
+		if (loopDelayTArg.getValue() > 1000) {
+			throw CardDeviceError("Can't set a loop delay greater than 1000ms");
+		}
+		this->timerFreq = 1000 / loopDelayTArg.getValue();
 	}
 
 	/* Do some checks */
@@ -113,6 +118,13 @@ void CompilerConfig::readCmdArgs(int argc, char** argv) {
 				throw CardDeviceError("If the --send option is used, the --board option must be set");
 			}
 		}
+	}
+
+	if (this->timerFreq == 0) {
+		cout << IOMod(FG_CYAN) << "[INFO] The time frequency is set to 0, the program will run as fast as possible" << EOL;
+	}
+	if (this->timerFreq > MAX_TIMER_FREQ) {
+		cout << IOMod(FG_CYAN) << "[INFO] Can't set a frequency greater than " << MAX_TIMER_FREQ << EOL;
 	}
 
 	assertPathExists(this->cFiles, true);

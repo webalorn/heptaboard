@@ -31,7 +31,7 @@ struct CompilerConfig {
     std::string clockSpeed;
     std::string boardConstructor = "arduino";
 
-    uint loopDelay = 0;
+    uint timerFreq = 0;
 
     void readCmdArgs(int argc, char** argv);
     void parseEntryPoint(std::string label);

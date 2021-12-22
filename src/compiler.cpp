@@ -78,7 +78,7 @@ string compileC(CompilerConfig& conf) {
     fs::path entryHeader = fs::path(conf.entryFileCompiled).replace_extension(".h");
     gccCmd << "-c" << "-o" << mainObj << "/usr/local/include/heptaboard/main.c"
         << ("-DENTRY_HEADER=\"\\\"" + absolute(entryHeader).string() + "\\\"\"")
-        << ("-DENTRY=" + conf.entryPoint) << ("-DLOOP_DELAY=" + to_string(conf.loopDelay));
+        << ("-DENTRY=" + conf.entryPoint) << ("-DTIMER_FREQ=" + to_string(conf.timerFreq));
     if (conf.entryPointHasMem) {
         gccCmd << ("-DENTRY_MEM");
     }
