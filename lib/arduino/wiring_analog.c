@@ -35,9 +35,24 @@ void analogReference(uint8_t mode)
 	analog_reference = mode;
 }
 
-int analogRead(uint8_t pin)
-{
+void analogRead(uint8_t pin, int* read_to) {
+	static int* last_read_value = NULL;
 	uint8_t low, high;
+
+	if (last_read_value != NULL) {
+		#if defined(ADCSRA) && defined(ADCL)
+			// we have to read ADCL first; doing so locks both ADCL
+			// and ADCH until ADCH is read.  reading ADCL second would
+			// cause the results of each conversion to be discarded,
+			// as ADCL and ADCH would be locked when it completed.
+			low  = ADCL;
+			high = ADCH;
+			*last_read_value = (high << 8) | low;
+		#else
+			*last_read_value = 0;
+		#endif
+	}
+	last_read_value = read_to;
 
 #if defined(analogPinToChannel)
 #if defined(__AVR_ATmega32U4__)
@@ -71,30 +86,13 @@ int analogRead(uint8_t pin)
 #endif
 #endif
 
-	// without a delay, we seem to read from the wrong channel
-	//delay(1);
-
 #if defined(ADCSRA) && defined(ADCL)
 	// start the conversion
 	sbi(ADCSRA, ADSC);
 
 	// ADSC is cleared when the conversion finishes
-	while (bit_is_set(ADCSRA, ADSC));
-
-	// we have to read ADCL first; doing so locks both ADCL
-	// and ADCH until ADCH is read.  reading ADCL second would
-	// cause the results of each conversion to be discarded,
-	// as ADCL and ADCH would be locked when it completed.
-	low  = ADCL;
-	high = ADCH;
-#else
-	// we dont have an ADC, return 0
-	low  = 0;
-	high = 0;
+	// while (bit_is_set(ADCSRA, ADSC));
 #endif
-
-	// combine the two bytes
-	return (high << 8) | low;
 }
 
 // Right now, PWM output only works on the pins with

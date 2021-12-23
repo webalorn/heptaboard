@@ -2,11 +2,14 @@ open Harduino
 
 const ledGreenPin : int = 11
 const ledYellowPin : int = 10
+const ledRedPin : int = 9
 
 node main()
 returns (out_t: int)
 var a:int;
 let
     a = c_HIGH -> if c_HIGH = pre a then c_LOW else c_HIGH;
-    out_t = digitalWrite(ledGreenPin, a) + digitalWrite(ledYellowPin, 1 - a);
+    out_t = digitalWrite(ledGreenPin, a)
+        + digitalWrite(ledRedPin, a)
+        + digitalWrite(ledYellowPin, 1 - a);
 tel

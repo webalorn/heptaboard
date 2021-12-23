@@ -8,6 +8,12 @@
 #define DEF_FUN_NOARGS(FNAME) \
 	void Harduino__ ## FNAME ## _step(Harduino__ ## FNAME ## _out *out)
 
+#define DEF_NODE(FNAME, ...) \
+	void Harduino__ ## FNAME ## _step(__VA_ARGS__, Harduino__ ## FNAME ## _out *out, Harduino__ ## FNAME ## _mem *self)
+
+#define DEF_NODE_RESET(FNAME) \
+	void Harduino__ ## FNAME ## _reset(Harduino__ ## FNAME ## _mem *self)
+
 /* Arduino library */
 
 DEF_FUN(digitalWrite, int pin, int pinval) {
@@ -17,9 +23,14 @@ DEF_FUN(digitalRead, int pin) {
 	out->o = digitalRead(pin);
 }
 
-DEF_FUN(analogRead, int pin) {
-	out->o = analogRead(pin);
+DEF_NODE(analogRead, int pin) {
+	out->o = self->next_o;
+	analogRead(pin, &(self->next_o));
 }
+DEF_NODE_RESET(analogRead) {
+	self->next_o = 0;
+}
+
 DEF_FUN(analogWrite, int pin, int pinval) {
 	digitalWrite(pin, pinval);
 }

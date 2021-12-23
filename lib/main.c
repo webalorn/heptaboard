@@ -47,12 +47,7 @@ int main() {
 	sei();
 #endif
 	
-#if defined(UCSRB)
-	UCSRB = 0;
-#elif defined(UCSR0B)
-	UCSR0B = 0;
-#endif
-
+	init();
 	initVariant();
 	
 	setup();

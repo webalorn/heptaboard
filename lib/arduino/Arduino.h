@@ -117,6 +117,7 @@ typedef unsigned int word;
 typedef bool boolean;
 typedef uint8_t byte;
 
+void init(void);
 void initVariant(void);
 
 int atexit(void (*func)()) __attribute__((weak));
@@ -124,7 +125,7 @@ int atexit(void (*func)()) __attribute__((weak));
 void pinMode(uint8_t pin, uint8_t mode);
 void digitalWrite(uint8_t pin, uint8_t val);
 int digitalRead(uint8_t pin);
-int analogRead(uint8_t pin);
+void analogRead(uint8_t pin, int* read_to);
 void analogReference(uint8_t mode);
 void analogWrite(uint8_t pin, int val);
 

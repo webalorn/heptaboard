@@ -20,13 +20,25 @@
 
 #define DECL_FUN_VOID(FNAME, ...) DECL_FUN(int, FNAME, __VA_ARGS__)
 
+#define DECL_NODE(TY_OUT, FNAME, ...) \
+	Harduino__ ## FNAME ## _mem; \
+	typedef struct { \
+		TY_OUT o; \
+	} Harduino__ ## FNAME ## _out; \
+	\
+	void Harduino__ ## FNAME ## _step(__VA_ARGS__, Harduino__ ## FNAME ## _out*, Harduino__ ## FNAME ## _mem*); \
+	void Harduino__ ## FNAME ## _reset(Harduino__ ## FNAME ## _mem*);
+
 /* Arduino library */
 
 DECL_FUN_VOID(digitalWrite, int, int)
 DECL_FUN(int, digitalRead, int)
 
-DECL_FUN(int, analogRead, int)
 DECL_FUN_VOID(analogWrite, int, int)
+
+typedef struct { int next_o; }
+DECL_NODE(int, analogRead, int);
+
 
 // DECL_FUN_VOID(tone, int, int, int)
 // DECL_FUN_VOID(noTone, int)

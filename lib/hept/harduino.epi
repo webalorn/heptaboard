@@ -47,7 +47,7 @@ const c_A7 : int = 21
 val fun digitalWrite(pin:int; pinval:int) returns (o:int)
 val fun digitalRead(pin:int) returns (o:int)
 
-val fun analogRead(pin:int) returns (o:int)
+val node analogRead(pin:int) returns (o:int)
 val fun analogWrite(pin:int; pinval:int) returns (o:int)
 
 (* val fun tone(pin:int; freq:int; duration:int) returns (o:int)
