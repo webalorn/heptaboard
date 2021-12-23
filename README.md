@@ -19,10 +19,13 @@ make install
 
 ```bash
 # Compile one example and send it to the automatically detected Arduino, executing the main loop 4 time per second
-heptaboard -c examples/setup.c -s -f 4 examples/two_leds.ept
+heptaboard -s -f 4 examples/setup.ept examples/led_blink.ept
 
-# Send the code to the board located at /dev/arduinodevic, executing it every 200 milliseconds
+# Send the code to the board located at /dev/arduinodevic, executing it every 200 milliseconds, with a setup file written in C
 heptaboard -c examples/setup.c -b /dev/arduinodevice -s -d 200 examples/two_leds.ept
+
+## Higher frequency
+heptaboard -c examples/setup.c -s -f 6000 examples/setup.ept examples/detector.ept
 ```
 
 You can use `heptaboard --help` to display all the available options.

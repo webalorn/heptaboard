@@ -1,6 +1,5 @@
 open Harduino
-
-const ledGreenPin : int = 11
+open Setup
 
 node main()
 returns (out_t: int)

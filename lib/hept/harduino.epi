@@ -44,6 +44,7 @@ const c_A7 : int = 21
 
 (* Arduino library *)
 
+val fun pinMode(pin:int; mode:int) returns (o:int)
 val fun digitalWrite(pin:int; pinval:int) returns (o:int)
 val fun digitalRead(pin:int) returns (o:int)
 

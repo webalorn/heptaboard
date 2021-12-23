@@ -31,6 +31,7 @@
 
 /* Arduino library */
 
+DECL_FUN_VOID(pinMode, int, int)
 DECL_FUN_VOID(digitalWrite, int, int)
 DECL_FUN(int, digitalRead, int)
 

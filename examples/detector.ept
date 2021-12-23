@@ -1,11 +1,5 @@
 open Harduino
-
-const potPin : int = c_A0
-const ledRedPin : int = 9
-const ledYellowPin : int = 10
-const ledGreenPin : int = 11
-const soundbuzzerPin : int = 3
-const buttonPin : int = 2
+open Setup
 
 node ledAlert(led: int; ratio: float; ratio_min: float) returns (out_t:int)
 var enable: bool;

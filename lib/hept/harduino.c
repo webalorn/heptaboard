@@ -16,6 +16,9 @@
 
 /* Arduino library */
 
+DEF_FUN(pinMode, int pin, int mode) {
+	pinMode(pin, mode);
+}
 DEF_FUN(digitalWrite, int pin, int pinval) {
 	digitalWrite(pin, pinval);
 }

@@ -13,10 +13,10 @@ struct CompilerConfig {
     std::string argsGcc = "";
     std::string argsLink = "";
     std::string argsHeptagon = "";
-    std::string entryPoint;
-    std::string entryFile;
-    std::string entryFileCompiled;
-    bool entryPointHasMem;
+
+    std::string entryFileCompiled, setupFileCompiled;
+    std::string entryPoint = "", setupPoint = "";
+    bool entryPointHasMem, setupPointHasMem;
 
     std::vector<std::string> cFiles;
     std::vector<std::string> heptFiles;
@@ -35,7 +35,7 @@ struct CompilerConfig {
 
     void readCmdArgs(int argc, char** argv);
     void parseEntryPoint(std::string label);
-    void checkEntryPoint();
+    void checkEntryPoints();
     fs::path getHeptTmpDirectory();
 };
 

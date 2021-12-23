@@ -1,0 +1,19 @@
+open Harduino
+
+const potPin : int = c_A0
+const ledRedPin : int = 9
+const ledYellowPin : int = 10
+const ledGreenPin : int = 11
+const soundbuzzerPin : int = 3
+const buttonPin : int = 2
+
+node setup()
+returns (out_t: int)
+let
+    out_t = pinMode(potPin, c_INPUT)
+        + pinMode(ledRedPin, c_OUTPUT)
+        + pinMode(ledYellowPin, c_OUTPUT)
+        + pinMode(ledGreenPin, c_OUTPUT)
+        + pinMode(soundbuzzerPin, c_OUTPUT)
+        + pinMode(buttonPin, c_INPUT_PULLUP);
+tel

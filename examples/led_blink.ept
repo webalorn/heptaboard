@@ -1,8 +1,5 @@
 open Harduino
-
-const ledGreenPin : int = 11
-const ledYellowPin : int = 10
-const ledRedPin : int = 9
+open Setup
 
 node leds_main()
 returns (out_t: int)
@@ -18,8 +15,7 @@ node main()
 returns (out_t: int)
 var clock_state:bool; out_leds:int;
 let
-    clock_state = clock(1000);
+    clock_state = clock(1);
     out_leds = leds_main();
-    out_t = merge clock_state out_leds 0
-        + tone(3, 2);
+    out_t = merge clock_state out_leds 0;
 tel

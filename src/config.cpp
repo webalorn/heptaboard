@@ -10,42 +10,31 @@ fs::path CompilerConfig::getHeptTmpDirectory() {
 	return outputFile + ".hptc.tmp";
 }
 
-void CompilerConfig::parseEntryPoint(string label) {
-	size_t separator = label.find("::");
-	string file, func;
+void CompilerConfig::checkEntryPoints() {
+	for (auto entryFile : this->heptFiles) {
+		fs::path cFileName = fs::path(entryFile).filename().replace_extension("c");
+		fs::path cFilePath = this->getHeptTmpDirectory()
+			/ (fs::path(entryFile).stem().string() + "_c") / cFileName;
+		string fileIdentifier = cFileName.stem().string();
+		fileIdentifier[0] = toupper(fileIdentifier[0]);
 
-	if (separator == std::string::npos) {
-		this->entryFile = this->heptFiles[0];
-		file = fs::path(this->entryFile).stem().string();
-		func = label;
-	} else {
-		file = label.substr(0, separator);
-		func = label.substr(separator+2, string::npos);
-
-		for (const string& pathStr : this->heptFiles) {
-			if (fs::path(pathStr).stem().string() == file) {
-				this->entryFile = pathStr;
-				break;
-			}
+		string mainEntryPoint = fileIdentifier + "__main";
+		string setupEntryPoint = fileIdentifier + "__setup";
+		
+		if (this->entryPoint == "" && isStringInFile(cFilePath, mainEntryPoint + "_step")) {
+			this->entryPointHasMem = isStringInFile(cFilePath, mainEntryPoint + "_mem*");
+			this->entryFileCompiled = cFilePath.string();
+			this->entryPoint = mainEntryPoint;
+		}
+		if (this->setupPoint == "" && isStringInFile(cFilePath, setupEntryPoint + "_step")) {
+			this->setupPointHasMem = isStringInFile(cFilePath, setupEntryPoint + "_mem*");
+			this->setupFileCompiled = cFilePath.string();
+			this->setupPoint = setupEntryPoint;
 		}
 	}
-	if (this->entryFile.size() == 0) {
-		throw HeptException("The file " + file + ".ept doesn't exists");
+	if (this->entryPoint == "") {
+		throw HeptException("Can't find the node 'main'");
 	}
-	file[0] = toupper(file[0]);
-	this->entryPoint = file + "__" + func;
-}
-
-void CompilerConfig::checkEntryPoint() {
-	fs::path cFileName = fs::path(this->entryFile).filename().replace_extension("c");
-	fs::path cFilePath = this->getHeptTmpDirectory()
-		/ (fs::path(this->entryFile).stem().string() + "_c") / cFileName;
-
-	if (!isStringInFile(cFilePath, this->entryPoint + "_step")) {
-		throw HeptException("The entry point " + this->entryPoint + " doesn't exists in the file " + cFilePath.string());
-	}
-	this->entryPointHasMem = isStringInFile(cFilePath, this->entryPoint + "_mem*");
-	this->entryFileCompiled = cFilePath.string();
 }
 
 void CompilerConfig::readCmdArgs(int argc, char** argv) {
@@ -55,7 +44,6 @@ void CompilerConfig::readCmdArgs(int argc, char** argv) {
 	ValueArg<string> argsLinkTArg("", "args-link", "Arguments passed to avr-gcc when used as a linker", false, this->argsLink, "linker args", cmd);
 	ValueArg<string> argsHeptagonTArg("", "args-hpt", "Arguments passed to heptagon", false, this->argsHeptagon, "heptagon args", cmd);
 	ValueArg<string> outputFileTArg("o", "output", "Name used by the output files", false, this->outputFile, "output-name", cmd);
-	ValueArg<string> entryPointTArg("e", "entry", "Entry point of the heptagon program, in the form filename::function (h1::main for the main function in h1.ept). If the file is not given, the first heptagon file is used. If not given at all, the function 'main' is used.", false, "main", "filename::function", cmd);
 
 	SwitchArg sendToBoardTArg("s", "send", "Send the compiled program to the arduino board", cmd, this->sendToBoard);
 	// SwitchArg listBoardsTArg("l", "list", "List all connected arduino boards", cmd, this->listBoards);
@@ -83,7 +71,6 @@ void CompilerConfig::readCmdArgs(int argc, char** argv) {
 
 	this->cFiles = cFilesTArg.getValue();
 	this->heptFiles = heptFilesTArg.getValue();
-	parseEntryPoint(entryPointTArg.getValue());
 
 	this->sendToBoard = sendToBoardTArg.getValue();
 	// this->listBoards = listBoardsTArg.getValue();

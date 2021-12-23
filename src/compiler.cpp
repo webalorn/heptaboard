@@ -39,7 +39,7 @@ void compileHeptagon(CompilerConfig& conf) {
         }
     }
 
-    conf.checkEntryPoint();
+    conf.checkEntryPoints();
 }
 
 void setGccFlags(CompilerConfig& conf, SysCommand& cmd) {
@@ -47,6 +47,11 @@ void setGccFlags(CompilerConfig& conf, SysCommand& cmd) {
             << ("-mmcu=" + conf.mmcu) << "-ffunction-sections" << "-fdata-sections"
             << "-I/usr/local/include/heptaboard/arduino" << "-I/usr/local/include/heptaboard/hept"
             << conf.argsGcc << "-std=gnu99";
+    
+    for (const string& heptCFile : conf.cFromHeptFiles) {
+        string hFileDirectory = fs::path(heptCFile).parent_path().string();
+        cmd << ("-I" + hFileDirectory);
+    }
 }
 
 string compileC(CompilerConfig& conf) {
@@ -77,8 +82,16 @@ string compileC(CompilerConfig& conf) {
     auto mainObj = conf.getHeptTmpDirectory() / "main.o";
     fs::path entryHeader = fs::path(conf.entryFileCompiled).replace_extension(".h");
     gccCmd << "-c" << "-o" << mainObj << "/usr/local/include/heptaboard/main.c"
+        << ("-DTIMER_FREQ=" + to_string(conf.timerFreq))
         << ("-DENTRY_HEADER=\"\\\"" + absolute(entryHeader).string() + "\\\"\"")
-        << ("-DENTRY=" + conf.entryPoint) << ("-DTIMER_FREQ=" + to_string(conf.timerFreq));
+        << ("-DENTRY=" + conf.entryPoint);
+    
+    if (conf.setupPoint != "") {
+        fs::path setupHeader = fs::path(conf.setupFileCompiled).replace_extension(".h");
+        gccCmd << ("-DSETUP_HEADER=\"\\\"" + absolute(setupHeader).string() + "\\\"\"")
+            << ("-DSETUP=" + conf.setupPoint);
+    }
+    
     if (conf.entryPointHasMem) {
         gccCmd << ("-DENTRY_MEM");
     }
@@ -133,6 +146,6 @@ void sendProgToBoard(CompilerConfig& conf, std::string hexFile) {
         << "-U" << ("flash:w:\"" + hexFile + "\":i");
 
     if (!avrdudeCmd.exec()) {
-        throw CompileError("Can't send the program to the board");
+        throw CardDeviceError("Can't send the program to the board");
     }
 }

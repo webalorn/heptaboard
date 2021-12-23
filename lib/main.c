@@ -5,15 +5,27 @@
 
 #define CONCAT2(x, y) x ## y
 #define CONCAT1(x, y) CONCAT2(x, y)
+
 #define ENTRY_OUT CONCAT1(ENTRY, _out)
 #define ENTRY_STEP CONCAT1(ENTRY, _step)
 #define ENTRY_RESET CONCAT1(ENTRY, _reset)
 #define ENTRY_MEM_OBJ CONCAT1(ENTRY, _mem)
 
+#ifdef SETUP
+#include SETUP_HEADER
+
+#define SETUP_OUT CONCAT1(SETUP, _out)
+#define SETUP_STEP CONCAT1(SETUP, _step)
+#define SETUP_MEM_OBJ CONCAT1(SETUP, _mem)
+#endif
+
 #define DELAY_MICRO 100
 
 // Declared weak in Arduino.h to allow user redefinitions.
 int atexit(void (*func)()) { return 0; }
+
+void setup() __attribute__((weak));
+void setup() {}
 
 // Weak empty variant initialization function.
 // May be redefined by variant files.
@@ -49,11 +61,21 @@ int main() {
 	
 	init();
 	initVariant();
-	
+
 	setup();
 
+#ifdef SETUP
+	SETUP_OUT setup_output;
+	#ifdef SETUP_MEM
+		SETUP_MEM_OBJ setup_memory;
+		SETUP_STEP(&setup_output, &setup_memory);
+	#else
+		SETUP_STEP(&setup_output);
+	#endif
+#endif
+
 	ENTRY_OUT output;
-#if defined(ENTRY_MEM)
+#ifdef ENTRY_MEM
 	ENTRY_MEM_OBJ memory;
 	ENTRY_RESET(&memory);
 #endif

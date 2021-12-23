@@ -1,6 +1,6 @@
 open Harduino
 
-const led1 : int = 10
+const led1 : int = 9
 const led2 : int = 11
 
 node everyn(n : int) returns (v : bool);
