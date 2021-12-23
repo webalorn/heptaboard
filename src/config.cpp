@@ -65,7 +65,7 @@ void CompilerConfig::readCmdArgs(int argc, char** argv) {
 	ValueArg<string> boardConstructorTArg("", "constructor", "board constructor (board type, defaults to " + this->boardConstructor + ")", false, this->boardConstructor, "arduino/...", cmd);
 
 	ValueArg<ull> clockSpeedTArg("", "cpu-clock", "Speed of the clock of the board", false, 16000000UL, "clock speed", cmd);
-	ValueArg<uint> freqTArg("f", "freq", "Number of iterations of the main loop each second", false, 0, "frequency", cmd);
+	ValueArg<uint> freqTArg("f", "freq", "Number of iterations of the main loop each second, should be <= " + to_string(MAX_TIMER_FREQ), false, 0, "frequency", cmd);
 	ValueArg<uint> loopDelayTArg("d", "delay", "Time between two iteration of the main loop (in milliseconds)", false, 0, "time interval", cmd);
 
 	MultiArg<string> cFilesTArg("c", "c-file", "C file compiled with the program", false, "C file", cmd);

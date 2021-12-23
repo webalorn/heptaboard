@@ -4,7 +4,7 @@ const ledGreenPin : int = 11
 const ledYellowPin : int = 10
 const ledRedPin : int = 9
 
-node main()
+node leds_main()
 returns (out_t: int)
 var a:int;
 let
@@ -12,4 +12,14 @@ let
     out_t = digitalWrite(ledGreenPin, a)
         + digitalWrite(ledRedPin, a)
         + digitalWrite(ledYellowPin, 1 - a);
+tel
+
+node main()
+returns (out_t: int)
+var clock_state:bool; out_leds:int;
+let
+    clock_state = clock(1000);
+    out_leds = leds_main();
+    out_t = merge clock_state out_leds 0
+        + tone(3, 2);
 tel

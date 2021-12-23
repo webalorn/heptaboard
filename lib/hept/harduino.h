@@ -39,9 +39,8 @@ DECL_FUN_VOID(analogWrite, int, int)
 typedef struct { int next_o; }
 DECL_NODE(int, analogRead, int);
 
-
-// DECL_FUN_VOID(tone, int, int, int)
-// DECL_FUN_VOID(noTone, int)
+typedef struct { int n_steps; }
+DECL_NODE(int, tone, int, unsigned int)
 
 DECL_FUN_VOID(randomSeed, int)
 DECL_FUN(int, random, int)
@@ -77,6 +76,10 @@ DECL_FUN(float, int2float, int)
 DECL_FUN(int, float2int, float)
 DECL_FUN(int, bool2int, bool)
 DECL_FUN(bool, int2bool, int)
+
+/* Helper functions */
+typedef struct { int cur_clock; }
+DECL_NODE(bool, clock, int)
 
 #endif // HARDUINO_H
 

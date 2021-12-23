@@ -35,12 +35,24 @@ DEF_FUN(analogWrite, int pin, int pinval) {
 	digitalWrite(pin, pinval);
 }
 
-// DEF_FUN(tone, int pin, int freq, int duration) {
-// 	tone(pin, max(0, freq), duration);
-// }
-// DEF_FUN(noTone, int pin) {
-// 	noTone(pin);
-// }
+DEF_NODE(tone, int pin, unsigned int freqDivider) {
+	if (freqDivider > 0) {
+		if (self->n_steps >= freqDivider) {
+			volatile uint8_t *pin_port = portOutputRegister(digitalPinToPort(pin));
+			volatile uint8_t pin_mask = digitalPinToBitMask(pin);
+
+			*pin_port ^= pin_mask;
+			self->n_steps = 0;
+		} else {
+			self->n_steps++;
+		}
+	} else {
+		digitalWrite(pin, 0);
+	}
+}
+DEF_NODE_RESET(tone) {
+	self->n_steps = 0;
+}
 
 DEF_FUN(randomSeed, int seed) {
 	if (seed != 0) {
@@ -130,4 +142,13 @@ DEF_FUN(bool2int, bool x) {
 }
 DEF_FUN(int2bool, int x) {
 	out->o = x ? 1 : 0;
+}
+
+/* Helper functions */
+DEF_NODE(clock, int timer) {
+	out->o = self->cur_clock == 0;
+	self->cur_clock = self->cur_clock < timer ? self->cur_clock + 1 : 0;
+}
+DEF_NODE_RESET(clock) {
+	self->cur_clock = 0;
 }

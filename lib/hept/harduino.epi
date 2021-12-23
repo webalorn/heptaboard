@@ -50,8 +50,7 @@ val fun digitalRead(pin:int) returns (o:int)
 val node analogRead(pin:int) returns (o:int)
 val fun analogWrite(pin:int; pinval:int) returns (o:int)
 
-(* val fun tone(pin:int; freq:int; duration:int) returns (o:int)
-val fun noTone(pin:int) returns (o:int) *)
+val node tone(pin:int; freqDivider:int) returns (o:int)
 
 val fun randomSeed(seed:int) returns (o:int)
 val fun random(howbig:int) returns (o:int)
@@ -86,3 +85,7 @@ val fun int2float(x:int) returns (o:float)
 val fun float2int(x:float) returns (o:int)
 val fun bool2int(x:bool) returns (o:int)
 val fun int2bool(x:int) returns (o:bool)
+
+(* Helper functions *)
+
+val node clock(timer:int) returns (o:bool)

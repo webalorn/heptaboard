@@ -7,28 +7,40 @@ const ledGreenPin : int = 11
 const soundbuzzerPin : int = 3
 const buttonPin : int = 2
 
-node ledAlert(led: int; ratio: float; ratio_min: float) returns (out_t:int);
+node ledAlert(led: int; ratio: float; ratio_min: float) returns (out_t:int)
+var enable: bool;
 let
-    out_t = digitalWrite(led, if ratio >=. ratio_min then c_HIGH else c_LOW)
+    out_t = digitalWrite(led, if ratio >=. ratio_min and enable then c_HIGH else c_LOW);
+    enable = true -> not (pre enable);
 tel;
 
-node emitSound(powerRatio: float) returns (out_t:int);
+node emitSound(realRatio: float) returns (out_t:int)
+var freqDivider:int;
 let
-    (* out_t = if realRatio > 0.05 then
-        tone(soundbuzzerPin, float2int(1000. * realRatio), 0)
-    else noTone(soundbuzzerPin); *)
-    out_t = 0;
+    freqDivider = if realRatio <. 0.05 then 0 else
+        float2int((1.0 -. realRatio) *. 50.0) + 1;
+    out_t = tone(soundbuzzerPin, freqDivider);
 tel;
+
+node leds_main(realRatio:float)
+returns (out_t: int)
+let
+    out_t = ledAlert(ledGreenPin, realRatio, 0.25)
+        + ledAlert(ledYellowPin, realRatio, 0.5)
+        + ledAlert(ledRedPin, realRatio, 0.75);
+tel
 
 node main() returns (out_t:int)
 var ratio, initRatio, realRatio:float;
+    clock_leds: bool; out_leds: int;
 let
     ratio = int2float(analogRead(potPin)) /. 1023.0;
     initRatio = 0.0 -> if digitalRead(buttonPin) = c_LOW then ratio else pre initRatio;
     realRatio = if ratio >. initRatio then (ratio -. initRatio) /. (1.0 -. initRatio) else 0.0;
 
-    out_t = ledAlert(ledGreenPin, realRatio, 0.25)
-        + ledAlert(ledYellowPin, realRatio, 0.5)
-        + ledAlert(ledRedPin, realRatio, 0.75)
+    clock_leds = clock(1500);
+    out_leds = leds_main(realRatio when clock_leds);
+
+    out_t = merge clock_leds out_leds 0
         + emitSound(realRatio);
 tel;
