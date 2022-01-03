@@ -55,10 +55,13 @@ lib/%.o: lib/%.c
 heptaboard: $(OBJ-FILES)
 	$(CXX) $(CXX-FLAGS) -o heptaboard $(OBJ-FILES)
 
+# Générer et inclure les dépendances
+src/%.d: src/%.cpp
+	@$(CXX) $(CXX-FLAGS) $(INCLUDES) -MM $^ -o $@
 -include $(DEP)
 
 src/%.o: src/%.cpp
-	$(CXX) $(CXX-FLAGS) $(INCLUDES) -MMD -o $@ -c $<
+	$(CXX) $(CXX-FLAGS) $(INCLUDES) -o $@ -c $<
 
 clean:
 	rm $(LIB-OBJ-FILES) $(LIB_FILE) $(LIB_LOCALPATH)/harduino.epci $(OBJ-FILES) $(DEP) heptaboard

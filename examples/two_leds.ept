@@ -3,6 +3,11 @@ open Harduino
 const led1 : int = 9
 const led2 : int = 11
 
+node setup() returns (out_t: int)
+let
+    out_t = pinMode(led1, c_OUTPUT) + pinMode(led2, c_OUTPUT);
+tel
+
 node everyn(n : int) returns (v : bool);
 var x, px : int;
 let
